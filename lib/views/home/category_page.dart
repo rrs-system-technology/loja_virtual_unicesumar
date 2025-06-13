@@ -41,6 +41,7 @@ class CategoryPage extends StatelessWidget {
           itemBuilder: (context, index) {
             final produto = categoryController.productList[index];
             return ProductCard(
+              cartAnimationMethod: (p0) {},
               product: produto,
               onTap: () {
                 Navigator.push(

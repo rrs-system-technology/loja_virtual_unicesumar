@@ -9,6 +9,21 @@ class UserRepository {
 
   UserRepository(this.localRepository, this.remoteRepository);
 
+  Future<UserModel?> getUserByUsername(String username) async {
+    UserModel? user = await localRepository.getUserByName(username);
+    if (user != null) {
+      return user;
+    }
+
+    final users = await remoteRepository.userService.fetchUsers();
+
+    try {
+      return users.firstWhere((user) => user.username == username);
+    } catch (e) {
+      return null;
+    }
+  }
+
   Future<UserModel?> getUserById(int id) async {
     // Primeiro tenta buscar local
     UserModel? user = await localRepository.getUserById(id);

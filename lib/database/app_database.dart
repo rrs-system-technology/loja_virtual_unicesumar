@@ -56,7 +56,10 @@ class AppDatabase {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             cartId INTEGER,
             productId INTEGER,
-            quantity INTEGER
+            quantity INTEGER,
+            title TEXT,
+            price REAL,
+            imageUrl TEXT       
           )
         ''');
 
@@ -85,6 +88,25 @@ class AppDatabase {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT UNIQUE,
             token TEXT
+          )
+        ''');
+
+        await db.execute('''
+          CREATE TABLE IF NOT EXISTS orders(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            userId INTEGER,
+            date TEXT,
+            status TEXT
+          )
+        ''');
+
+        await db.execute('''
+          CREATE TABLE IF NOT EXISTS order_products(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            orderId INTEGER,
+            productId INTEGER,
+            quantity INTEGER,
+            price REAL
           )
         ''');
       },

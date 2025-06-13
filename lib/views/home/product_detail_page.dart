@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 
 import './../../controllers/controllers.dart';
@@ -16,7 +17,8 @@ class ProductDetailPage extends StatefulWidget {
 }
 
 class _ProductDetailPageState extends State<ProductDetailPage> {
-  final CartController carrinhoController = Get.find<CartController>();
+  final NumberFormat currencyFormat = NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$');
+  final CartController cartController = Get.find<CartController>();
   final FavoritosController favoritosController = Get.find<FavoritosController>();
   final AuthController authController = Get.find<AuthController>();
 
@@ -114,7 +116,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       children: [
                         /// Preço
                         Text(
-                          'R\$ ${widget.product.price.toStringAsFixed(2)}',
+                          currencyFormat.format(widget.product.price * quantidade),
                           style: const TextStyle(
                             color: Colors.deepPurple,
                             fontSize: 20,
@@ -199,14 +201,25 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               ),
               icon: const Icon(Icons.add_shopping_cart),
               label: const Text('Adicionar ao Carrinho'),
-              onPressed: () {
-                carrinhoController.addProductToCart(widget.product.id, quantidade);
+              onPressed: () async {
+                await cartController.addProductToCart(
+                  widget.product,
+                  quantidade,
+                );
+                for (var i = 1; i < quantidade; i++) {
+                  await cartController.updateCartBadge();
+                }
 
                 Get.snackbar(
-                  'Produto Adicionado',
-                  '${widget.product.title} x$quantidade foi adicionado ao carrinho.',
+                  'Itens adicionados ao carrinho',
+                  '${quantidade}x ${widget.product.title} foram adicionados ao carrinho.',
                   colorText: Colors.white,
-                  backgroundColor: Colors.green,
+                  backgroundColor: Colors.green[900],
+                  snackPosition: SnackPosition.TOP,
+                  margin: const EdgeInsets.all(16),
+                  borderRadius: 12,
+                  icon: const Icon(Icons.lock_outline, color: Colors.white),
+                  duration: const Duration(seconds: 3),
                 );
               },
             ),

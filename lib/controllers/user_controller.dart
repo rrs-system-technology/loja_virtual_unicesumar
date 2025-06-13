@@ -38,4 +38,19 @@ class UserController extends GetxController {
       erro.value = e.toString();
     }
   }
+
+  Future<bool> updateUserReturningSuccess(UserModel userModel) async {
+    try {
+      carregando.value = true;
+      erro.value = '';
+      await userRepository.saveUser(userModel);
+      user.value = userModel;
+      carregando.value = false;
+      return true;
+    } catch (e) {
+      erro.value = e.toString();
+      carregando.value = false;
+      return false;
+    }
+  }
 }

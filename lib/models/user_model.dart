@@ -42,4 +42,25 @@ class UserModel {
       'phone': phone,
     };
   }
+
+  // Adiciona aqui:
+  UserModel copyWith({
+    int? id,
+    String? email,
+    String? username,
+    String? password,
+    NameModel? name,
+    AddressModel? address,
+    String? phone,
+  }) {
+    return UserModel(
+      id: id ?? this.id,
+      email: email ?? this.email,
+      username: username ?? this.username,
+      password: password ?? this.password,
+      name: name ?? this.name,
+      address: address ?? this.address,
+      phone: phone ?? this.phone,
+    );
+  }
 }

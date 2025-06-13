@@ -1,20 +1,37 @@
-import 'package:sqflite/sqlite_api.dart';
-
 import './../database/app_database.dart';
 import './../models/models.dart';
 
 class CartProductsLocalRepository {
-  Future<void> saveCartProduct(int cartId, int productId, int quantity) async {
+  Future<void> saveCartProduct(int cartId, CartProductModel cartProduct) async {
     final db = await AppDatabase().database;
-    await db.insert(
+
+    // Primeiro tenta fazer UPDATE → se o item já existe no carrinho, atualiza
+    final count = await db.update(
       'cart_products',
       {
-        'cartId': cartId,
-        'productId': productId,
-        'quantity': quantity,
+        'quantity': cartProduct.quantity,
+        'title': cartProduct.title,
+        'price': cartProduct.price,
+        'imageUrl': cartProduct.imageUrl,
       },
-      conflictAlgorithm: ConflictAlgorithm.replace,
+      where: 'cartId = ? AND productId = ?',
+      whereArgs: [cartId, cartProduct.productId],
     );
+
+    // Se não atualizou nada (ou seja, o item não existia), faz INSERT
+    if (count == 0) {
+      await db.insert(
+        'cart_products',
+        {
+          'cartId': cartId,
+          'productId': cartProduct.productId,
+          'quantity': cartProduct.quantity,
+          'title': cartProduct.title,
+          'price': cartProduct.price,
+          'imageUrl': cartProduct.imageUrl,
+        },
+      );
+    }
   }
 
   Future<List<CartProductModel>> getCartProducts(int cartId) async {

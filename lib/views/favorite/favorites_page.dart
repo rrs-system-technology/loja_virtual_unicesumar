@@ -1,8 +1,9 @@
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 
-import 'package:google_fonts/google_fonts.dart';
-import 'package:loja_virtual_unicesumar/controllers/controllers.dart';
+import './../../controllers/controllers.dart';
 
 class FavoritesPage extends StatelessWidget {
   FavoritesPage({super.key});
@@ -13,12 +14,10 @@ class FavoritesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final NumberFormat currencyFormat = NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$');
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Meus Favoritos'),
-      ),
       body: Obx(() {
         final favoritos = favoritosController.favoritos;
 
@@ -26,7 +25,7 @@ class FavoritesPage extends StatelessWidget {
         if (!authController.logado.value) {
           return Center(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -88,7 +87,7 @@ class FavoritesPage extends StatelessWidget {
         if (favoritos.isEmpty) {
           return Center(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -113,33 +112,10 @@ class FavoritesPage extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.black54,
+                      color: Colors.black45,
                     ),
                   ),
                   const SizedBox(height: 36),
-                  SizedBox(
-                    width: 200,
-                    height: 50,
-                    child: ElevatedButton.icon(
-                      icon: const Icon(Icons.shopping_cart_outlined, color: Colors.white),
-                      label: const Text(
-                        'Continuar comprando',
-                        style: TextStyle(fontSize: 16, color: Colors.white),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: theme.primaryColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 4,
-                      ),
-                      onPressed: () {
-                        Future.microtask(() {
-                          Get.offAllNamed('/');
-                        });
-                      },
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -148,9 +124,9 @@ class FavoritesPage extends StatelessWidget {
 
         // Logado com favoritos (com fade-in + fontes)
         return ListView.separated(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
           itemCount: favoritos.length,
-          separatorBuilder: (context, index) => const Divider(),
+          separatorBuilder: (context, index) => const SizedBox(height: 6),
           itemBuilder: (context, index) {
             final produtoId = favoritos[index];
             final produto = Get.find<ProductController>().getProdutoById(produtoId);
@@ -163,64 +139,90 @@ class FavoritesPage extends StatelessWidget {
             }
 
             return TweenAnimationBuilder<double>(
-              tween: Tween(begin: 0, end: 1),
+              tween: Tween(begin: 0.9, end: 1),
               duration: Duration(milliseconds: 300 + (index * 100)),
-              curve: Curves.easeInOut,
+              curve: Curves.easeOutBack,
               builder: (context, value, child) {
-                return Opacity(
-                  opacity: value,
-                  child: Transform.translate(
-                    offset: Offset(0, 20 * (1 - value)),
-                    child: child,
-                  ),
+                return Transform.scale(
+                  scale: value,
+                  child: child,
                 );
               },
-              child: ListTile(
-                contentPadding: const EdgeInsets.symmetric(vertical: 8),
-                leading: ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.network(
-                    produto.image,
-                    width: 60,
-                    height: 60,
-                    fit: BoxFit.cover,
-                  ),
+              child: Card(
+                elevation: 8,
+                shadowColor: theme.primaryColor.withOpacity(0.3),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                title: Text(
-                  produto.title,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.montserrat(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
-                  ),
-                ),
-                subtitle: Text(
-                  'R\$ ${produto.price.toStringAsFixed(2)}',
-                  style: GoogleFonts.lato(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: theme.primaryColor,
-                  ),
-                ),
-                trailing: IconButton(
-                  icon: Icon(Icons.delete_outline, color: theme.primaryColor),
-                  onPressed: () {
-                    favoritosController.toggleFavorito(produtoId);
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(12),
+                    onTap: () {
+                      // Futuramente você pode abrir a ProductDetailPage aqui
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Row(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.network(
+                              produto.image,
+                              width: 70,
+                              height: 70,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  produto.title,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.montserrat(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  currencyFormat.format(produto.price),
+                                  style: GoogleFonts.lato(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: theme.primaryColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.delete_outline, color: theme.primaryColor),
+                            onPressed: () {
+                              favoritosController.toggleFavorito(produtoId);
 
-                    Get.snackbar(
-                      'Removido',
-                      '${produto.title} removido dos favoritos.',
-                      colorText: Colors.white,
-                      backgroundColor: theme.primaryColor,
-                      snackPosition: SnackPosition.TOP,
-                      margin: const EdgeInsets.all(16),
-                      borderRadius: 12,
-                      icon: const Icon(Icons.favorite_border, color: Colors.white),
-                      duration: const Duration(seconds: 2),
-                    );
-                  },
+                              Get.snackbar(
+                                'Removido',
+                                '${produto.title} removido dos favoritos.',
+                                colorText: Colors.white,
+                                backgroundColor: theme.primaryColor,
+                                snackPosition: SnackPosition.TOP,
+                                margin: const EdgeInsets.all(16),
+                                borderRadius: 12,
+                                icon: const Icon(Icons.favorite_border, color: Colors.white),
+                                duration: const Duration(seconds: 2),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ),
             );

@@ -17,3 +17,6 @@ export './favoritos_repository.dart';
 export './rating_local_repository.dart';
 export './rating_repository.dart';
 export './banner_repository.dart';
+export './order_local_repository.dart';
+export './order_remote_repository.dart';
+export './order_repository.dart';

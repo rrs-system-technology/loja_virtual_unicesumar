@@ -17,6 +17,12 @@ class ProductController extends GetxController {
   var carregando = true.obs;
   var erro = ''.obs;
 
+  @override
+  void onInit() {
+    super.onInit();
+    fetchProducts();
+  }
+
   // Carregar todos os produtos
   Future<void> fetchProducts() async {
     try {

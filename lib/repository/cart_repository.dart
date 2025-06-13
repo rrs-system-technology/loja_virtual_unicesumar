@@ -11,8 +11,12 @@ class CartRepository {
     return await cartLocalRepository.saveCart(userId, date);
   }
 
-  Future<void> saveCartProduct(int cartId, int productId, int quantity) async {
-    await cartProductsLocalRepository.saveCartProduct(cartId, productId, quantity);
+  Future<void> removeCartProduct(int cartId, int productId) async {
+    return await cartLocalRepository.removeCartProduct(cartId, productId);
+  }
+
+  Future<void> saveCartProduct(int cartId, CartProductModel cartProduct) async {
+    await cartProductsLocalRepository.saveCartProduct(cartId, cartProduct);
   }
 
   Future<CartModel?> getCartById(int cartId) async {

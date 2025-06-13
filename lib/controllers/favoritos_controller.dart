@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 import '../repository/repository.dart';
+import 'controllers.dart';
 
 class FavoritosController extends GetxController {
   final FavoritosRepository favoritosRepository;
@@ -9,20 +10,22 @@ class FavoritosController extends GetxController {
 
   final RxList<int> favoritos = <int>[].obs;
 
-  int userId = 1; // ajustar para pegar do UserController se precisar
+  Future<void> loadFavoritosForUser(int? userId) async {
+    if (userId == null) {
+      return;
+    }
 
-  @override
-  void onInit() {
-    super.onInit();
-    _loadFavoritos();
-  }
-
-  Future<void> _loadFavoritos() async {
     final favoritosData = await favoritosRepository.getFavoritosByUserId(userId);
-    favoritos.assignAll(favoritosData.map((fav) => fav['product_id'] as int));
+    favoritos.assignAll(favoritosData.map((fav) => fav['productId'] as int));
   }
 
   Future<void> toggleFavorito(int productId) async {
+    final userId = Get.find<UserController>().user.value?.id;
+
+    if (userId == null) {
+      return;
+    }
+
     if (favoritos.contains(productId)) {
       await favoritosRepository.removeFavorito(userId, productId);
       favoritos.remove(productId);

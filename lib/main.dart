@@ -1,81 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
-import './controllers/controllers.dart';
-import './repository/repository.dart';
-import './services/services.dart';
 import './widgets/widgets.dart';
 import './views/views.dart';
+import 'bindings/initial_binding.dart';
 
-void main() {
+Future<void> main() async {
   // Registrar os services globais
 
-  final productService = ProductService();
-  final categoryService = CategoryService();
-  final bannerService = BannerService();
-  final userService = UserService();
-  final authService = AuthService();
-  // Registrar os RemoteRepositories com seus services
+  WidgetsFlutterBinding.ensureInitialized();
 
-  final productRemoteRepository = ProductRemoteRepository(productService);
-  final categoryRemoteRepository = CategoryRemoteRepository(categoryService);
-  final bannerRemoteRepository = BannerRemoteRepository(bannerService);
-
-  final authRemoteRepository = AuthRemoteRepository(authService);
-  final authLocalRepository = AuthLocalRepository();
-
-  // Registrar os Repositories
-  final authRepository = AuthRepository(authLocalRepository, authRemoteRepository);
-  Get.put(authRepository);
-
-  final productRepository = ProductRepository(productRemoteRepository);
-  Get.put(productRepository);
-
-  final categoryRepository = CategoryRepository(categoryRemoteRepository);
-  Get.put(categoryRepository);
-
-  final bannerRepository = BannerRepository(bannerRemoteRepository);
-  Get.put(bannerRepository);
-
-  final userLocalRepository = UserLocalRepository();
-  final userRemoteRepository = UserRemoteRepository(userService);
-  final userRepository = UserRepository(userLocalRepository, userRemoteRepository);
-  Get.put(userRepository);
-
-  final cartLocalRepository = CartLocalRepository();
-  final cartProductsLocalRepository = CartProductsLocalRepository();
-  final cartRepository = CartRepository(cartLocalRepository, cartProductsLocalRepository);
-  Get.put(cartRepository);
-  Get.put(CartController(cartRepository: cartRepository));
-
-  final favoritosRepository = FavoritosRepository(FavoritosLocalRepository());
-  Get.put(favoritosRepository);
-  Get.put(FavoritosController(favoritosRepository: favoritosRepository));
-
-  // Registrar os Controllers globais
-
-  Get.put(MainNavigationController());
-
-  Get.put(HomeController(
-    bannerRepository: bannerRepository,
-    categoryRepository: categoryRepository,
-    productRepository: productRepository,
-  ));
-
-  Get.put(CartController(cartRepository: cartRepository));
-
-  Get.put(UserController(userRepository: userRepository));
-
-  Get.put(UserController(userRepository: userRepository));
-
-  Get.put(BannerController(bannerRepository: bannerRepository));
-
-  Get.put(CategoryController(categoryRepository: categoryRepository));
-
-  Get.put(ProductController(productRepository: productRepository));
-
-  Get.put(AuthController(authRepository: authRepository));
-
+  await GetStorage.init(); // Inicializa o GetStorage
+  // Inicializa locale para pt_BR
+  await initializeDateFormatting('pt_BR', null);
   runApp(const MyApp());
 }
 
@@ -90,14 +29,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
-
-        // Cores principais
         primaryColor: Colors.deepPurple,
         scaffoldBackgroundColor: Colors.grey[100],
-
-        // AppBar
         appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.deepPurple,
+          backgroundColor: Color.fromARGB(255, 152, 104, 235),
           foregroundColor: Colors.white,
           elevation: 4,
           centerTitle: true,
@@ -108,16 +43,12 @@ class MyApp extends StatelessWidget {
           ),
           iconTheme: IconThemeData(color: Colors.white),
         ),
-
-        // Botão flutuante
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
           backgroundColor: Colors.deepPurple,
           foregroundColor: Colors.white,
           elevation: 6,
           shape: StadiumBorder(),
         ),
-
-        // Card
         cardTheme: CardTheme(
           color: Colors.white,
           elevation: 6,
@@ -126,16 +57,12 @@ class MyApp extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-
-        // Texto
         textTheme: const TextTheme(
           bodyLarge: TextStyle(fontSize: 16, color: Colors.black87),
           bodyMedium: TextStyle(fontSize: 14, color: Colors.black87),
           bodySmall: TextStyle(fontSize: 12, color: Colors.black54),
           titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
         ),
-
-        // Chips padrão (caso use no app)
         chipTheme: ChipThemeData(
           backgroundColor: Colors.deepPurple,
           selectedColor: Colors.orange,
@@ -147,18 +74,21 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: MainNavigationPage(), // sua tela inicial
+
+      // 👉 TIRA ISSO:
+      // home: MainNavigationPage(),
+
+      initialRoute: '/',
       getPages: [
-        GetPage(name: '/', page: () => MainNavigationPage()), // App já abre com o menu
+        GetPage(
+          name: '/',
+          page: () => MainNavigationPage(),
+          binding: InitialBinding(), // GARANTE o binding correto
+        ),
+        GetPage(name: '/cart', page: () => CartPage()),
         GetPage(name: '/category/:category', page: () => CategoryPage()),
         GetPage(name: '/signup', page: () => const SignUpPage()),
         GetPage(name: '/login', page: () => const LoginPage()),
-        /*
-        GetPage(name: '/cart', page: () => CartPage()),
-        GetPage(name: '/produto/listar', page: () => ProductListPage()),
-        GetPage(name: '/produto/create', page: () => const ProductFormPage()),
-        
-        */
       ],
     );
   }

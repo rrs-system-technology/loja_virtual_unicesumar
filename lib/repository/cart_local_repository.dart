@@ -57,4 +57,13 @@ class CartLocalRepository {
       whereArgs: [cartId],
     );
   }
+
+  Future<void> removeCartProduct(int cartId, int productId) async {
+    final db = await AppDatabase().database;
+    await db.delete(
+      'cart_products',
+      where: 'cartId = ? AND productId = ?',
+      whereArgs: [cartId, productId],
+    );
+  }
 }

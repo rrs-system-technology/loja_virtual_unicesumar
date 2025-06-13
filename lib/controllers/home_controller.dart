@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 
-import '../repository/repository.dart';
-import '../models/models.dart';
+import './../repository/repository.dart';
+import './../models/models.dart';
 
 class HomeController extends GetxController {
   final BannerRepository bannerRepository;

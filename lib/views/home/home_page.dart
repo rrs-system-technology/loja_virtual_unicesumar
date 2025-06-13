@@ -1,62 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../controllers/controllers.dart';
-import '../../widgets/widgets.dart';
-import '../../views/views.dart';
+import './../../controllers/controllers.dart';
+import './../../widgets/widgets.dart';
+import './../../views/views.dart';
 
-class HomePage extends StatelessWidget {
-  final HomeController homeController = Get.find<HomeController>();
-  final CartController cartController = Get.find<CartController>();
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
-  HomePage({super.key});
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final cartController = Get.find<CartController>();
+  final controller = Get.find<HomeController>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Loja Online'),
-        actions: [
-          Stack(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.shopping_cart_outlined),
-                onPressed: () {
-                  Get.toNamed('/cart');
-                },
-              ),
-              Positioned(
-                right: 6,
-                top: 6,
-                child: Obx(() => cartController.cartProducts.isEmpty
-                    ? const SizedBox.shrink()
-                    : Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: const BoxDecoration(
-                          color: Colors.orange,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Text(
-                          cartController.totalQuantity.toString(),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      )),
-              ),
-            ],
-          ),
-        ],
-      ),
       body: Obx(() {
-        if (homeController.isLoading.value) {
+        if (controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
         }
 
-        if (homeController.errorMessage.isNotEmpty) {
-          return Center(child: Text(homeController.errorMessage.value));
+        if (controller.errorMessage.isNotEmpty) {
+          return Center(child: Text(controller.errorMessage.value));
         }
 
         return SingleChildScrollView(
@@ -65,7 +34,7 @@ class HomePage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               /// Banners
-              BannerCarousel(banners: homeController.banners),
+              BannerCarousel(banners: controller.banners),
 
               const SizedBox(height: 16),
 
@@ -76,18 +45,17 @@ class HomePage extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               SizedBox(
-                height: 60,
+                height: 40,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: homeController.categories.length,
+                  itemCount: controller.categories.length,
                   itemBuilder: (context, index) {
-                    final categoria = homeController.categories[index];
+                    final categoria = controller.categories[index];
                     return Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: CategoryTile(
                         category: categoria,
                         onTap: () {
-                          //Get.to(() => CategoryPage());
                           Get.toNamed('/category/${Uri.encodeComponent(categoria)}');
                         },
                       ),
@@ -107,7 +75,7 @@ class HomePage extends StatelessWidget {
               GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: homeController.featuredProducts.length,
+                itemCount: controller.featuredProducts.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   crossAxisSpacing: 6,
@@ -115,9 +83,12 @@ class HomePage extends StatelessWidget {
                   childAspectRatio: 0.75,
                 ),
                 itemBuilder: (context, index) {
-                  final product = homeController.featuredProducts[index];
+                  final product = controller.featuredProducts[index];
                   return ProductCard(
                     product: product,
+                    cartAnimationMethod: (imageKey) {
+                      cartController.itemSelectedCartAnimations(imageKey);
+                    },
                     onTap: () {
                       Get.to(() => ProductDetailPage(product: product));
                     },
