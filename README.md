@@ -98,7 +98,7 @@ Edição de perfil com dados pessoais e endereço
 
 ▶️ Playlist das Aulas
 Assista ao passo a passo do desenvolvimento na playlist:
-🔗 YouTube - Loja Virtual
+🔗 YouTube - Loja Virtual https://www.youtube.com/playlist?list=PLMibyndz00bfPuBB5Q5qIsgegevRzBf07
 
 🧑‍💻 Desenvolvedor/Professor
 Rivaldo Roberto da Silva
