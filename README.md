@@ -70,6 +70,7 @@ Componentização de widgets
 📁 Estrutura do Projeto
 
 
+```txt
 lib/
 ├── common/        # Helpers, temas, constantes
 ├── controllers/   # GetX Controllers
@@ -78,6 +79,8 @@ lib/
 ├── repository/    # Repositórios remotos e locais
 ├── views/         # Telas do app
 └── widgets/       # Componentes reutilizáveis
+```
+
 
 
 🎯 Funcionalidades
