@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import './../../controllers/controllers.dart';
 import './../../widgets/widgets.dart';
+import 'components/quantity_widget.dart';
 
 class CartPage extends StatelessWidget {
   final CartController cartController = Get.find();
@@ -101,89 +102,59 @@ class CartPage extends StatelessWidget {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     margin: const EdgeInsets.symmetric(vertical: 4),
                     child: ListTile(
-                      leading: Stack(
-                        alignment: Alignment.topLeft,
-                        children: [
-                          CircleAvatar(
-                            radius: 28,
-                            backgroundImage: NetworkImage(item.imageUrl),
-                          ),
-                          Obx(() {
-                            final isFavorito = favoriteController.isFavorito(item.productId);
-                            return Positioned(
-                              bottom: -4,
-                              right: -4,
-                              child: IconButton(
-                                icon: Icon(
-                                  isFavorito ? Icons.favorite : Icons.favorite_border,
-                                  color: isFavorito ? Colors.red : Colors.grey,
-                                  size: 20,
-                                ),
-                                onPressed: () {
-                                  if (!isLogado) {
-                                    Get.snackbar(
-                                      'Acesso negado',
-                                      'Faça login para favoritar produtos.',
-                                      colorText: Colors.white,
-                                      backgroundColor: Theme.of(context).primaryColor,
-                                      snackPosition: SnackPosition.TOP,
-                                      margin: const EdgeInsets.all(16),
-                                      borderRadius: 12,
-                                      icon: const Icon(Icons.lock_outline, color: Colors.white),
-                                      duration: const Duration(seconds: 3),
-                                    );
-                                    return;
-                                  }
-                                  favoriteController.toggleFavorito(item.productId);
-                                },
-                              ),
-                            );
-                          }),
-                        ],
-                      ),
-                      title: Text(
-                        item.title,
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      subtitle: Text(currencyFormat.format(item.price)),
-                      trailing: ConstrainedBox(
-                        constraints: const BoxConstraints(minWidth: 100, maxWidth: 110),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          mainAxisSize: MainAxisSize.min,
+                        leading: Stack(
+                          alignment: Alignment.topLeft,
                           children: [
-                            IconButton(
-                              icon: const Icon(Icons.remove_circle_outline),
-                              onPressed: () {
-                                cartController.atualizarquantity(item.productId, item.quantity - 1);
-                                cartController.downgradeCartBadge();
-                              },
-                              iconSize: 20,
+                            CircleAvatar(
+                              radius: 28,
+                              backgroundImage: NetworkImage(item.imageUrl),
                             ),
-                            // AnimatedSwitcher no contador:
-                            AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 300),
-                              transitionBuilder: (child, animation) =>
-                                  ScaleTransition(scale: animation, child: child),
-                              child: Text(
-                                '${item.quantity}',
-                                key: ValueKey(item.quantity),
-                                style: const TextStyle(fontSize: 16),
-                              ),
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.add_circle_outline),
-                              onPressed: () {
-                                cartController.atualizarquantity(item.productId, item.quantity + 1);
-                                cartController.updateCartBadge();
-                              },
-                              iconSize: 20,
-                            ),
+                            Obx(() {
+                              final isFavorito = favoriteController.isFavorito(item.productId);
+                              return Positioned(
+                                bottom: -4,
+                                right: -4,
+                                child: IconButton(
+                                  icon: Icon(
+                                    isFavorito ? Icons.favorite : Icons.favorite_border,
+                                    color: isFavorito ? Colors.red : Colors.grey,
+                                    size: 20,
+                                  ),
+                                  onPressed: () {
+                                    if (!isLogado) {
+                                      Get.snackbar(
+                                        'Acesso negado',
+                                        'Faça login para favoritar produtos.',
+                                        colorText: Colors.white,
+                                        backgroundColor: Theme.of(context).primaryColor,
+                                        snackPosition: SnackPosition.TOP,
+                                        margin: const EdgeInsets.all(16),
+                                        borderRadius: 12,
+                                        icon: const Icon(Icons.lock_outline, color: Colors.white),
+                                        duration: const Duration(seconds: 3),
+                                      );
+                                      return;
+                                    }
+                                    favoriteController.toggleFavorito(item.productId);
+                                  },
+                                ),
+                              );
+                            }),
                           ],
                         ),
-                      ),
-                    ),
+                        title: Text(
+                          item.title,
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        subtitle: Text(currencyFormat.format(item.price)),
+                        trailing: QuantityWidget(
+                          suffixText: 'Un',
+                          value: item.quantity,
+                          result: (quantity) {
+                            cartController.atualizarquantity(item.productId, quantity);
+                          },
+                        )),
                   );
                 },
               ),

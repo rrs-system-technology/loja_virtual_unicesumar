@@ -42,7 +42,7 @@ class HomeController extends GetxController {
 
       /// Featured Products
       final productsApi = await productRepository.fetchProducts();
-      featuredProducts.assignAll(productsApi.take(8).toList());
+      featuredProducts.assignAll(productsApi.take(30).toList());
     } catch (e) {
       errorMessage.value = 'Erro ao carregar a Home: $e';
     } finally {

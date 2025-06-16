@@ -1,7 +1,7 @@
 import 'repository.dart';
 
 class FavoritosRepository {
-  final FavoritosLocalRepository localRepository;
+  final FavoriteLocalRepository localRepository;
 
   FavoritosRepository(this.localRepository);
 

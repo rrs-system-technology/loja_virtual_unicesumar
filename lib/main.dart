@@ -82,8 +82,8 @@ class MyApp extends StatelessWidget {
       getPages: [
         GetPage(
           name: '/',
-          page: () => MainNavigationPage(),
-          binding: InitialBinding(), // GARANTE o binding correto
+          page: () => const MainNavigationPage(),
+          binding: InitialBinding(),
         ),
         GetPage(name: '/cart', page: () => CartPage()),
         GetPage(name: '/category/:category', page: () => CategoryPage()),

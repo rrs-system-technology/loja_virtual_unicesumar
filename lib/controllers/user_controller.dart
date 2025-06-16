@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import '../models/user_model.dart';
-import '../repository/user_repository.dart';
+
+import './../repository/repository.dart';
+import './../models/user_model.dart';
 
 class UserController extends GetxController {
   final UserRepository userRepository;

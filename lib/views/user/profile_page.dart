@@ -168,7 +168,7 @@ class ProfilePage extends StatelessWidget {
                       elevation: 4,
                     ),
                     onPressed: () {
-                      Get.to(() => ProfileEditPage());
+                      Get.to(() => const ProfileEditPage());
                     },
                     icon: const Icon(Icons.edit, color: Colors.white),
                     label: const Text(

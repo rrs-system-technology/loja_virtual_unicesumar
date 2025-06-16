@@ -40,6 +40,42 @@ class UserLocalRepository {
     return null;
   }
 
+  Future<UserModel?> login(LoginRequestModel request) async {
+    final db = await AppDatabase().database;
+    final maps = await db.query(
+      'auth',
+      where: 'username = ? AND password = ?',
+      whereArgs: [request.username, request.password],
+    );
+
+    if (maps.isNotEmpty) {
+      final map = maps.first;
+      return UserModel(
+        id: map['id'] as int,
+        email: map['email'] as String,
+        username: map['username'] as String,
+        password: map['password'] as String,
+        name: NameModel(
+          firstname: map['firstname'] as String,
+          lastname: map['lastname'] as String,
+        ),
+        address: AddressModel(
+          city: map['city'] as String,
+          street: map['street'] as String,
+          number: map['number'] as int,
+          zipcode: map['zipcode'] as String,
+          geolocation: GeolocationModel(
+            lat: map['lat'] as String,
+            long: map['long'] as String,
+          ),
+        ),
+        phone: map['phone'] as String,
+      );
+    }
+
+    return null;
+  }
+
   Future<UserModel?> getUserByName(String userName) async {
     final db = await AppDatabase().database;
     final maps = await db.query(

@@ -2,7 +2,7 @@ import 'package:sqflite/sqlite_api.dart';
 
 import './../database/app_database.dart';
 
-class FavoritosLocalRepository {
+class FavoriteLocalRepository {
   Future<void> addFavorito(int userId, int productId, String dataFavorito) async {
     final db = await AppDatabase().database;
     await db.insert(

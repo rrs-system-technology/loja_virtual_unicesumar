@@ -5,18 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Loja Virtual - Backup",
+            "name": "Loja Virtual",
             "request": "launch",
             "type": "dart"
         },
         {
-            "name": "loja_virtual_unicesumar (profile mode)",
+            "name": "Loja Virtual (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
         },
         {
-            "name": "loja_virtual_unicesumar (release mode)",
+            "name": "Loja Virtual (release mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"

@@ -41,7 +41,7 @@ class _SignUpPageState extends State<SignUpPage> {
         geolocation: GeolocationModel(lat: '', long: ''),
       ),
       name: NameModel(firstname: '', lastname: ''),
-      phone: '', // se for necessário
+      phone: '',
     );
 
     await usuarioController.saveUser(newUser);

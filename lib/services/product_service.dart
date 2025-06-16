@@ -7,10 +7,14 @@ class ProductService {
   Future<List<ProductModel>> fetchProducts() async {
     final response = await http.get(Uri.parse('${Common.baseUrl}/products'));
 
-    if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body);
-      return data.map((json) => ProductModel.fromJson(json)).toList();
-    } else {
+    try {
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        return data.map((json) => ProductModel.fromJson(json)).toList();
+      } else {
+        throw Exception('Erro ao carregar produtos: ${response.statusCode}');
+      }
+    } catch (e) {
       throw Exception('Erro ao carregar produtos: ${response.statusCode}');
     }
   }

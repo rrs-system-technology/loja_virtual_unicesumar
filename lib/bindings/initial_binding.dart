@@ -50,7 +50,7 @@ class InitialBinding extends Bindings {
     Get.put(cartRepository);
     Get.put(CartController(cartRepository: cartRepository)); // OK
 
-    final favoritosRepository = FavoritosRepository(FavoritosLocalRepository());
+    final favoritosRepository = FavoritosRepository(FavoriteLocalRepository());
     Get.put(favoritosRepository);
     Get.put(FavoritosController(favoritosRepository: favoritosRepository)); // ✅ ADD AQUI
 
