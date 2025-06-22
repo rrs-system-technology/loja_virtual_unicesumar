@@ -39,12 +39,7 @@ class AuthController extends GetxController {
 
         if (userModel != null) {
           box.write('usuario', jsonEncode(userModel.toJson()));
-          Get.find<UserController>().user.value = userModel;
-
-          // Carregar dados do user:
-          Get.find<FavoritosController>().loadFavoritosForUser(userModel.id);
-          Get.find<CartController>().loadCartForUser(userModel.id);
-          Get.find<OrderController>().fetchOrdersForUser(userModel.id);
+          Get.offAllNamed('/');
         }
       } else {
         logado.value = false;

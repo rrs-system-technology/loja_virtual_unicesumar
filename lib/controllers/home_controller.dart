@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 import './../repository/repository.dart';
 import './../models/models.dart';
+import 'controllers.dart';
 
 class HomeController extends GetxController {
   final BannerRepository bannerRepository;
@@ -24,6 +28,19 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    final box = GetStorage();
+    final userJson = box.read('usuario');
+
+    if (userJson != null) {
+      final user = UserModel.fromJson(jsonDecode(userJson));
+      final userCtrl = Get.find<UserController>();
+      userCtrl.user.value = user;
+      Get.find<AuthController>().logado.value = true;
+
+      Get.find<FavoritosController>().loadFavoritosForUser(user.id);
+      Get.find<CartController>().loadCartForUser(user.id);
+      Get.find<OrderController>().fetchOrdersForUser(user.id);
+    }
     loadHomeData();
   }
 

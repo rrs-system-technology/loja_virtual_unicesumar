@@ -25,8 +25,9 @@ class AuthService {
         );
       }
 
-      // Caso não encontre localmente, lança exceção original
-      throw Exception('Erro no login: ${response.statusCode}');
+      return LoginResponseModel(
+        token: '',
+      );
     }
   }
 
